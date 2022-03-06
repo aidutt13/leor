@@ -5,8 +5,8 @@
 #include <map>
 #include <memory>
 
-#include "charstream.h"
-#include "chartest.h"
+#include "lexer/charstream.h"
+#include "../chartest.h"
 #include "myexception.h"
 
 typedef std::function<bool(const std::string_view&)> CharPred;

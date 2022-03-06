@@ -4,7 +4,7 @@
 #include <string_view>
 #include <tuple>
 
-#include "inttypes.h"
+#include "../inttypes.h"
 
 class CharStream {
 public:

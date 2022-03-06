@@ -15,7 +15,7 @@ BUILDDIR := build
 all: build $(TARGET)
 
 SRC := \
-	$(wildcard $(SRCDIR)/*.cpp)
+	$(wildcard $(SRCDIR)/*.cpp) $(wildcard $(SRCDIR)/*/*.cpp)
 
 OBJ := \
 	$(patsubst $(SRCDIR)/%.cpp,$(BUILDDIR)/%.o,$(SRC))
@@ -26,10 +26,10 @@ DEPENDENCIES := \
 $(OBJ): $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp
 	@echo -e "$(CCGREEN)[C++]$(CCRESET) Building $@ from $<"
 	@mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) -I./$(INCDIR) -MMD -c -o $@ $<
+	@$(CXX) $(CXXFLAGS) -I./$(INCDIR) -MMD -c -o $@ $<
 
 $(TARGET): $(OBJ)
-	$(CXX) $(CFLAGS) -o $@ $^ $(LIBS)
+	@$(CXX) $(CFLAGS) -o $@ $^ $(LIBS)
 
 -include $(DEPENDENCIES)
 
@@ -45,7 +45,7 @@ release: CXXFLAGS += -O2
 release: all
 
 clean:
-	-@rm -rvf $(BUILDDIR)/*.o $(TARGET)
+	-@rm -rvf $(BUILDDIR)/*.o $(BUILDDIR)/*.d $(TARGET)
 
 run:
 	@echo -e "$(CCGREEN)[CMD]$(CCRESET) Running ./$(TARGET)"

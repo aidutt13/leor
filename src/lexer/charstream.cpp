@@ -1,4 +1,4 @@
-#include "charstream.h"
+#include "lexer/charstream.h"
 
 CharStream::CharStream(const std::string &data)
   : m_data(data)

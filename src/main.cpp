@@ -2,7 +2,7 @@
 #include <fstream>
 #include <sstream>
 
-#include "lexer.h"
+#include "lexer/lexer.h"
 
 int main() {
 
