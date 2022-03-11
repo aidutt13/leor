@@ -1,5 +1,9 @@
 #include "lexer/lexer.h"
 
+#ifdef LEOR_DEBUG
+  #include <iostream>
+#endif
+
 using namespace std::literals;
 
 std::map<Token::Type, std::string_view> Token::TypeToString
@@ -26,6 +30,24 @@ bool Token::operator~() const
   return type == Type::EOB;
 }
 
+std::ostream& operator<<(std::ostream& os, const Token::Type& t)
+{
+  try
+  {
+    os << Token::TypeToString.at(t);
+  }
+  catch (std::out_of_range ex)
+  {
+    #ifdef LEOR_DEBUG
+      std::cerr << ex.what() << "Token::Type::" << (uint64)t << std::endl;
+      exit(1);
+    #else
+      os << (uint64)t;
+    #endif
+  }
+  return os;
+}
+
 std::ostream& operator<<(std::ostream& os, const Token& tok)
 {
   auto& [row, col] = tok.pos;
@@ -33,7 +55,7 @@ std::ostream& operator<<(std::ostream& os, const Token& tok)
   // std::cout << "Token::Type = '" << tok.type << "'\n";
 
   os << "{"
-     << Token::TypeToString.at(tok.type) << ", "
+     << tok.type << ", "
      << "'" << tok.value << "', "
      << "(" << row << ":" << col << ") }";
   
@@ -41,8 +63,10 @@ std::ostream& operator<<(std::ostream& os, const Token& tok)
 }
 
 Lexer::Lexer(CharStream* data)
-  : m_data(data)
-{ }
+{
+  m_data = data;
+  m_current = Token{ Token::NONE, "", {0, 0} };
+}
 
 std::string Lexer::rdWhile(const CharPred& pred)
 {
@@ -63,8 +87,7 @@ std::string Lexer::rdEscaped(const char& end)
   std::string ret;
   auto func = [end, &esc, &ret](const std::string_view& csv) -> bool
   {
-
-    const auto& c = csv.at(0);
+    char c = csv.at(0);
     if (esc)
       esc = false;
 
@@ -161,7 +184,7 @@ Token Lexer::rdPunc()
 Token Lexer::rdNext()
 {
   if (m_data->eof())
-    return Token{Token::EOB};
+    return Token{Token::EOB, "", m_data->pos()};
 
   rdWhile(ct::isWS);
 
@@ -204,14 +227,14 @@ Token Lexer::rdNext()
   throw std::move(exc);
 }
 
-const Token& Lexer::peek()
+Token& Lexer::peek()
 {
   if (!m_current)
     m_current = rdNext();
   return m_current;
 }
 
-const Token Lexer::next()
+Token Lexer::next()
 {
   if (eof())
     return m_current;

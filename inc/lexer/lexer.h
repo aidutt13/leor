@@ -6,7 +6,7 @@
 #include <memory>
 
 #include "lexer/charstream.h"
-#include "../chartest.h"
+#include "chartest.h"
 #include "myexception.h"
 
 typedef std::function<bool(const std::string_view&)> CharPred;
@@ -28,6 +28,7 @@ struct Token {
 
   bool operator!() const;
   bool operator~() const;
+  friend std::ostream& operator<<(std::ostream&, const Token::Type&);
   friend std::ostream& operator<<(std::ostream&, const Token&);
 };
 
@@ -52,8 +53,8 @@ public:
 
   Token rdNext();
 
-  const Token& peek();
-  const Token next();
+  Token& peek();
+  Token next();
   bool eof();
 
 private:

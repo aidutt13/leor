@@ -22,7 +22,7 @@ int main() {
     while(!lx.eof())
       std::cout << lx.next() << std::endl;
   }
-  catch (Exception& exc)
+  catch (const Exception& exc)
   {
     std::cerr << exc.what() << std::endl;
   }

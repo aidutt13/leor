@@ -45,7 +45,7 @@ release: CXXFLAGS += -O2
 release: all
 
 clean:
-	-@rm -rvf $(BUILDDIR)/*.o $(BUILDDIR)/*.d $(TARGET)
+	-@rm -rvf $(BUILDDIR)/*.o $(BUILDDIR)/*.d $(BUILDDIR)/*/*.o $(BUILDDIR)/*/*.d $(TARGET)
 
 run:
 	@echo -e "$(CCGREEN)[CMD]$(CCRESET) Running ./$(TARGET)"
