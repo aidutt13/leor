@@ -8,7 +8,7 @@ LIBS :=
 
 TARGET := leor
 
-INCDIR := inc
+INCDIR := src
 SRCDIR := src
 BUILDDIR := build
 

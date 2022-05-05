@@ -1,7 +1,5 @@
 
 def main() -> Int {
 
-  write(1, "Hello world!", 13);
-
-  return 0;
+  write("Hello world!");
 };
