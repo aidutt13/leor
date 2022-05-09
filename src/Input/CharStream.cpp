@@ -4,7 +4,7 @@ namespace leor
 {
 
   CharStream::CharStream(const std::string& buffer)
-    : m_buffer(buffer), m_col(0), m_row(0), m_it(0)
+    : m_buffer(buffer), m_row(0), m_col(0), m_it(0)
   { }
 
   int8_t CharStream::peek()

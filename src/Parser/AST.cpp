@@ -1,6 +1,6 @@
 #include "Parser/AST.h"
 
-namespace leor_new
+namespace leor
 {
   using namespace std::string_literals;
 
@@ -16,15 +16,9 @@ namespace leor_new
     return *this;
   }
 
-  AST& AST::set(const std::string& key, const Value& value)
-  {
-    values.insert_or_assign(key, value);
-    return *this;
-  }
-
   AST& AST::set(const std::string& key, const AST& value)
   {
-    values.insert_or_assign(key, value);
+    values.insert_or_assign(key, Base(std::move(value)));
     return *this;
   }
 
@@ -67,7 +61,7 @@ namespace leor_new
     const std::string& name,
     const std::vector<AST>& args,
     const AST& body,
-    const std::tuple<uint64_t, uint64_t> pos = std::make_tuple(0UL, 0UL)
+    const std::tuple<uint64_t, uint64_t> pos
   ) {
     
     return AST()
@@ -143,10 +137,19 @@ namespace leor_new
       .set("prog", prog);
   }
 
+  const std::unordered_map<std::string, uint64_t> OP_PRECEDENCE
+  {{
+    {"=",  1},
+    {"||", 2},
+    {"&&", 3},
+    {"<",  7}, {">",  7}, {"<=", 7}, {">=", 7}, {"==", 7}, {"!=", 7},
+    {"+", 10}, {"-", 10},
+    {"*", 20}, {"/", 20}, {"%", 20},
+  }};
+} // namespace leor
 
-} // namespace leor_new
 
-
+// !!!! DEPRECATED !!!!
 namespace leor_old
 {
   BasicAST::BasicAST(
@@ -239,13 +242,5 @@ namespace leor_old
       : BasicAST(Type::PROG, pos), prog(std::move(prog))
     { }
 
-  const hash_map<std::string, uint64_t> OP_PRECEDENCE
-  {{
-    {"=",  1},
-    {"||", 2},
-    {"&&", 3},
-    {"<",  7}, {">",  7}, {"<=", 7}, {">=", 7}, {"==", 7}, {"!=", 7},
-    {"+", 10}, {"-", 10},
-    {"*", 20}, {"/", 20}, {"%", 20},
-  }};
+  
 } // namespace leor

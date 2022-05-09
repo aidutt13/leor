@@ -8,8 +8,17 @@
 
 #include "Lexer/Lexer.h"
 
-namespace leor_new
+namespace leor
 {
+  template <typename T>
+  struct Base {
+    T value;
+
+    Base(const T& value) : value(value) {}
+
+    inline T& get() { return value; }
+  };
+
   struct AST
   {
   private:
@@ -22,7 +31,7 @@ namespace leor_new
       double,
       std::string,
       char,
-      AST,
+      Base<AST>,
       std::vector<AST> 
     >;
 
@@ -37,7 +46,7 @@ namespace leor_new
     };
 
     Type type;
-    std::unordered_map<std::string, Value> values;
+    std::map<std::string, Value> values;
     std::tuple<uint64_t, uint64_t> pos;
 
     Value& operator[](const std::string& key)
@@ -53,91 +62,101 @@ namespace leor_new
   private:
     AST& set(Type type);
     AST& set(const std::tuple<uint64_t, uint64_t>& pos);
-    AST& set(const std::string& key, const Value& value);
     AST& set(const std::string& key, const AST& value);
+    
+    template <typename T>
+    AST& set(const std::string& key, const T& value)
+    {
+      values.insert_or_assign(key, value);
+      return *this;
+    }
+
 
     // Constructors
   public:
-    AST None();
+    static AST None();
 
-    AST Bool(
+    static AST Bool(
       const bool& value,
       const std::tuple<uint64_t, uint64_t> pos = std::make_tuple(0UL, 0UL)
     );
 
-    AST Int(
+    static AST Int(
       const int64_t& value,
       const std::tuple<uint64_t, uint64_t> pos = std::make_tuple(0UL, 0UL)
     );
 
-    AST Float(
+    static AST Float(
       const double& value,
       const std::tuple<uint64_t, uint64_t> pos = std::make_tuple(0UL, 0UL)
     );
 
-    AST String(
+    static AST String(
       const std::string& value,
       const std::tuple<uint64_t, uint64_t> pos = std::make_tuple(0UL, 0UL)
     );
 
-    AST Char(
+    static AST Char(
       const char& value,
       const std::tuple<uint64_t, uint64_t> pos = std::make_tuple(0UL, 0UL)
     );
 
-    AST Var(
+    static AST Var(
       const std::string& value,
       const std::tuple<uint64_t, uint64_t> pos = std::make_tuple(0UL, 0UL)
     );
 
-    AST Function(
+    static AST Function(
       const std::string& name,
       const std::vector<AST>& args,
       const AST& body,
       const std::tuple<uint64_t, uint64_t> pos = std::make_tuple(0UL, 0UL)
     );
 
-    AST Variable(
+    static AST Variable(
       const std::string& name,
       const AST& value,
       const bool& is_constant,
       const std::tuple<uint64_t, uint64_t> pos = std::make_tuple(0UL, 0UL)
     );
 
-    AST Call(
+    static AST Call(
       AST function,
       const std::vector<AST>& args,
       const std::tuple<uint64_t, uint64_t> pos = std::make_tuple(0UL, 0UL)
     );
 
-    // AST If(); // TODO
+    // static AST If(); // TODO
 
-    // AST While(); // TODO
+    // static AST While(); // TODO
 
-    // AST For(); // TODO
+    // static AST For(); // TODO
 
-    AST Binary(
+    static AST Binary(
       const std::string& op,
       const AST& left,
       const AST& right,
       const std::tuple<uint64_t, uint64_t> pos = std::make_tuple(0UL, 0UL)
     );
 
-    AST Assign(
+    static AST Assign(
       const std::string& op,
       const AST& left,
       const AST& right,
       const std::tuple<uint64_t, uint64_t> pos = std::make_tuple(0UL, 0UL)
     );
 
-    AST Prog(
+    static AST Prog(
       const std::vector<AST>& prog,
       const std::tuple<uint64_t, uint64_t> pos = std::make_tuple(0UL, 0UL)
     );
   };
-} // namespace leor_new
+
+  extern const std::unordered_map<std::string, uint64_t> OP_PRECEDENCE;
+} // namespace leor
 
 
+// !!!! DEPRECATED !!!!
 namespace leor_old
 {
   // struct BasicAST - A basic AST node
@@ -284,18 +303,6 @@ namespace leor_old
       const std::tuple<uint64_t, uint64_t>& pos = std::make_tuple(0, 0)
     );
   };
-  
-  // Precedence of operators
-  extern const hash_map<std::string, uint64_t> OP_PRECEDENCE;
-
-
 } // namespace leor
-
-
-namespace std
-{
-  // TODO: Implement to_string for BasicAST
-  string to_string(leor::BasicAST* ast);
-} // namespace std
 
 #endif // LEOR_AST_H
