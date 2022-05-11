@@ -28,6 +28,7 @@ namespace leor
 
     AST ParseCall(AST func);
     AST ParseFunction();
+    AST ParseVariable();
     AST ParseBool();
     AST ParseProg();
 

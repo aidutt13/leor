@@ -190,9 +190,29 @@ namespace leor
         name,
         std::move(args),
         std::move(body),
+        type,
         pos
       )
     );
+  }
+
+  AST Parser::ParseVariable()
+  {
+    bool isConst = !!IsKeyword("const");
+    m_lexer.get();
+
+    auto name = ParseVarname();
+    SkipOp(":");
+    auto type = ParseVarname();
+
+    auto value = AST::None();
+    if (!!IsOp("="))
+    {
+      m_lexer.get();
+      value = ParseExpression();
+    }
+
+    return AST::Variable(name, type, value, isConst);
   }
 
   AST Parser::ParseBool()
@@ -255,6 +275,11 @@ namespace leor
       if (!!IsKeyword("def"))
       {
         return ParseFunction();
+      }
+
+      if (!!IsKeyword("const") || !!IsKeyword("mut"))
+      {
+        return ParseVariable();
       }
 
       auto tok = m_lexer.get();

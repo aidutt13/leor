@@ -14,7 +14,7 @@ namespace leor
   const std::regex RegExs::DIGIT = "[0-9]"_re;
   const std::regex RegExs::CHAR_QUOTE = "\'"_re;
   const std::regex RegExs::STRING_QUOTE = "\""_re;
-  const std::regex RegExs::OP = "[+\\-*/%=<>!&|^]"_re;
+  const std::regex RegExs::OP = "[+\\-*/%=<>!&|^:]"_re;
   const std::regex RegExs::PUNC = "[\\(\\)\\[\\]\\{\\}\\;\\,]"_re;
   const std::regex RegExs::KEYWORD = "true|false|def|return"_re;
 

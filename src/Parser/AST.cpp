@@ -61,6 +61,7 @@ namespace leor
     const std::string& name,
     const std::vector<AST>& args,
     const AST& body,
+    const std::string& type,
     const std::tuple<uint64_t, uint64_t> pos
   ) {
     
@@ -69,11 +70,13 @@ namespace leor
       .set(pos)
       .set("name", name)
       .set("args", args)
+      .set("type", type)
       .set("body", body);
   }
 
   AST AST::Variable(
     const std::string& name,
+    const std::string& type,
     const AST& value,
     const bool& is_constant,
     const std::tuple<uint64_t, uint64_t> pos
@@ -83,6 +86,7 @@ namespace leor
       .set(AST::Type::VARIABLE)
       .set(pos)
       .set("name", name)
+      .set("type", type)
       .set("value", value)
       .set("is_constant", is_constant);
   }

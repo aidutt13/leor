@@ -3,7 +3,6 @@
 #ifndef LEOR_AST_H
 #define LEOR_AST_H
 
-#include <memory>
 #include <variant>
 
 #include "Lexer/Lexer.h"
@@ -54,7 +53,7 @@ namespace leor
       return values[key];
     }
 
-    const Value& at(const std::string& key)
+    const Value& at(const std::string& key) const
     {
       return values.at(key);
     }
@@ -110,11 +109,13 @@ namespace leor
       const std::string& name,
       const std::vector<AST>& args,
       const AST& body,
+      const std::string& type,
       const std::tuple<uint64_t, uint64_t> pos = std::make_tuple(0UL, 0UL)
     );
 
     static AST Variable(
       const std::string& name,
+      const std::string& type,
       const AST& value,
       const bool& is_constant,
       const std::tuple<uint64_t, uint64_t> pos = std::make_tuple(0UL, 0UL)
